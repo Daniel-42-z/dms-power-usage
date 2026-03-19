@@ -18,8 +18,22 @@ PluginComponent {
     property string selectedPopout: pluginData.selectedPopout || "battery"
 
     property var popoutActions: ({
-            "battery": (x, y, w, s, scr) => popoutService?.toggleBattery(x, y, w, s, scr),
-            "processList": (x, y, w, s, scr) => popoutService?.toggleProcessList(x, y, w, s, scr)
+            "battery": (x, y, w, s, scr) => {
+                if (popoutService?.batteryPopoutLoader) {
+                    popoutService.batteryPopoutLoader.active = true;
+                }
+                Qt.callLater(() => {
+                    popoutService?.toggleBattery(x, y, w, s, scr);
+                });
+            },
+            "processList": (x, y, w, s, scr) => {
+                if (popoutService?.processListPopoutLoader) {
+                    popoutService.processListPopoutLoader.active = true;
+                }
+                Qt.callLater(() => {
+                    popoutService?.toggleProcessList(x, y, w, s, scr);
+                });
+            }
         })
 
     property var popoutNames: ({
